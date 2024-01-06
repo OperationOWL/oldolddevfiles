@@ -1,0 +1,174 @@
+computer>usr>share>bin: all binary files
+computer>usr>share: all config files used by binary files
+computer>usr>share>applications: all application files that run binary and config file (similar to .exe files)
+[3:59 PM]
+windows fast startup doesnt completely shut down pc. Hence, go to change power settings:
+system settings>battery>choose power button>disable fast startup
+[4:02 PM]
+windows - ntfs
+debian - ext4
+[4:04 PM]
+swap - ROM that acts as RAM (usually 2 times the ram)
+/ - root(entire OS)
+note: u can set it so that home directory is out of root. Useful in case you decide to swap out OS
+[4:08 PM]
+.                                                                                                                         .
+..................................................command line..................................................
+.                                                                                                                         .
+
+OperationOWL — 08/18/2021
+pwd - displays current directory location
+
+OperationOWL — 08/18/2021
+cd: change current directory
+cd /"directory" - represents absolute path i.e change from the root i.e from the start of the hard disk
+cd "directory" - represents relative path
+cd ./"directory" - "." represent the cur directory
+cd ~ - "~" represents /home/"username" directory
+cd ../ - parent directory
+[4:34 PM]
+ls: list current directory
+ls -l - long current listing with more information
+ls -r - lists current directory in reverse order
+ls -p - lists current directory with file types
+ls -s - sort based on size
+ls "directory" - lists directory that is passed
+ls --help - lists all functions with ls
+
+OperationOWL — 08/18/2021
+sudo - superuser do: gives admin privileges.
+
+file permissions: some files that have been created require admin privileges to be edited. To edit them from terminal, use sudo prefix. To run any command as admin, preface with sudo.
+
+sometimes, u will need to run full time on admin mode. For this, type "sudo su" - meaning sudo switch user. This will switch user to root user, or admin user
+
+to switch back, type su "username" meaning swwitch user "username"
+[5:55 PM]
+package manager in debian based systems: apt package manager
+
+commands:
+sudo apt install "name of package"
+sudo apt remove "name of package"
+sudo apt autoremove - removes unused packages
+sudo apt-cache search "name of package" - searches for packages and displays. you must choose from that
+sudo apt-cache policy "name of package" - searches package in your system and displays
+
+note: not all packages are available through package managers. for this, other methods will be explained
+[6:00 PM]
+for unlisted packages, we will do the following:
+
+1.download the package for your os(debian) and save the file
+2. run: sudo dpkg -i "package location": this will unpack package and install
+3. launch and use
+
+to update packages, type sudo apt upgrade
+
+OperationOWL — 08/18/2021
+file permissions and ownership:
+
+when you type ls-l, the left most column explains all permissions.
+types of permissions: -rw(read and write), (--r)only read
+
+-rw--r--r
+
+in this, the first 3 characters (-rw) stand for the user. The next three (--r) stand for the user's group. The last three (--r) stand for the public i.e anyone.
+
+when "ls-l" is used, the 2nd column tells us the username. the 3rd tells us the user's group, and the 4th column tells us the size in mb
+
+to change these permissions, the following method can be used:
+consider a file that has attributes -rw--r--r root root
+
+first, let us change the ownership to showcase a command.
+note: chown means change ownership
+
+sudo chown "user":"group" "filename"
+in our case, let's do
+
+'sudo chown root:"usergroup" "filename"' - meaning: -rw--r--r root nick group
+
+now, 
+note: chmod means change mode. 4: corresponds to --r, 6: corresponds to -rw, 7: corresponds to directory
+to change the read and write permissions, we will use:
+sudo chmod mode_for_user mode_for_group mode_for_public
+in out case, let's do
+
+"sudo chmod 664" - meaning: -rw-rw--r root nick group
+[6:32 PM]
+to delete files,
+use:
+note: rm means remove
+rm "filename"
+
+to make directory, use:
+note: mkdir means make directory
+mkdir "dirname"
+[6:36 PM]
+to run commands for entire directories, you will have to use a recursive command. this covers every single file inside the directory.
+the "-R" is used for this
+
+example:
+sudo chown -R "user":"group" "dirname"
+
+this command will go to the directory given and change the ownership of every single file in it to the ownership that was requested in the command
+[6:39 PM]
+to make files, you can use command
+touch "filename"
+
+to remove files with certain extensions, you can use "*"
+example:
+
+rm ./* "file extension"
+
+to remove all files inside the directory and leave the directory intact, we use:
+
+rm mydir/*
+
+to remove the directory itself, we can use:
+
+rm -rf mydir
+[6:41 PM]
+cp - means copy
+
+cp "file_current_location" "file_future_location"
+
+mv - means move
+
+mv "file_current_location" "file_future_location"
+August 19, 2021
+
+OperationOWL — 08/19/2021
+find command:
+
+find . -type f -name "*.txt" --find files with extension txt
+find . -type f -iname "*.txt" --find files with txt extension without case sesitivity. meaning it can be .txt, .Txt, .TXt.....etc
+
+find . -type f -iname "file*" --returns files with name "file" regardless of case sensitivity or type
+
+find . -type f -perm 0664 --returns files with 664 permission
+
+find . -type f -not -iname "*.txt" --gives all files except .txt,.Txt,.TXT.....etc files
+[11:31 PM]
+GREP commands:
+    this is used to find things inside files.
+
+grep "string" file --find string with case sensitivity
+grep -i "string" file --find string without case sensitivity
+grep -n -i "string" file --find string without case sensitivity and return the line number
+
+using find and grep together:
+exec means execute. u must end it with "{} +"
+find . -type -iname "*.txt" -exec grep -i -n "string" {} +
+                        |--------means less than 10 kb
+                        \/
+find . -type -f -size -10k -iname "*.txt" -exec grep -i -n "string" {} +
+[11:35 PM]
+saving command output to a file:
+
+example:
+ls >test.txt - saves all the results of ls to output.txt
+
+find . -type f -iname "test.txt" exec grep -i -n "dangerous" {} + >output.txt
+
+tee:
+    gives output and saves to file
+find . -type f -iname "test.txt" exec grep -i -n "dangerous" {} + | tee output.txt
